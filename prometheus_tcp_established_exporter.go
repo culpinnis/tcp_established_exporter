@@ -10,12 +10,18 @@ import (
 	"net/http"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/namsral/flag"
 )
 
 var(
 	//udp       = flag.Bool("udp", false, "display UDP sockets")
-	tcpv6       = flag.Bool("tcpv6", true, "display TCPv6 sockets")
-	port 	  = flag.Int("port", -1, "port that should be monitored")
+	//tcpv6       = flag.Bool("tcpv6", true, "display TCPv6 sockets")
+	//port 	  = flag.Int("port", -1, "port that should be monitored")
+	var tcpv6 bool;
+	flag.bool(&tcpv6, "tcpv6", "Should TCPV6 sockets be monitored?")
+	var port int;
+	port := -1;
+	flag.int(&port, "port", "The port that should be monitored. -1 monitors every port.")
 )
 
 const(
@@ -65,14 +71,14 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 		cur_c := string(daddr+":"+strconv.Itoa(int(dport)) + "|" + saddr + strconv.Itoa(int(sport)))
 		//fmt.Printf("%s %s %s \n", saddr, daddr, e.State)
 		if((*port==-1||*port==int(sport))&&sport!=myport) {
-			connection_counts_new[cur_c] = connection_counts[cur_c] + 1 
+			connection_counts_new[cur_c] = connection_counts[cur_c] + 1
 		}
 	}
 	return(connection_counts_new)
 }
 func main() {
 	flag.Parse()
-	
+
 	/*if !*udp && !*tcp {
 		flag.Usage()
 		os.Exit(0)
@@ -91,7 +97,7 @@ func main() {
 				fmt.Printf("Error")
 			}
 			connections = countSockInfo(connections, socks)
-			
+
 			if(*tcpv6) {
 				socks6, err := netstat.TCP6Socks(func(s6 *netstat.SockTabEntry) bool {
 					return s6.State == netstat.Established
@@ -101,13 +107,13 @@ func main() {
 				}
 				connections6 = countSockInfo(connections6, socks6)
 			}
-			
+
 			time.Sleep(1 * time.Second)
 		}
 	}()
 	go func() {
 		for{
-			var sum uint = 0 
+			var sum uint = 0
 			for _, value := range(connections) {
 				if(value > 6) {
 					sum += 1
@@ -127,4 +133,3 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
     http.ListenAndServe(":"+strconv.Itoa(myport) , nil)
 }
-
