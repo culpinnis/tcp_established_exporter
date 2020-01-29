@@ -12,10 +12,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-var(
-	tcpv6 bool
-	port int
-)
 
 const(
 	proto = 0x01 | 0x02
@@ -70,6 +66,10 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 	return(connection_counts_new)
 }
 func main() {
+	var(
+		tcpv6 bool
+		port int
+	)
 	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
 	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 	flag.Parse()
