@@ -16,10 +16,10 @@ var(
 	//udp       = flag.Bool("udp", false, "display UDP sockets")
 	//tcpv6       = flag.Bool("tcpv6", true, "display TCPv6 sockets")
 	//port 	  = flag.Int("port", -1, "port that should be monitored")
-	tcpv6 bool = true;
-	flag.bool(&tcpv6, "tcpv6", "Should TCPV6 sockets be monitored?")
-	port int = -1;
-	flag.int(&port, "port", "The port that should be monitored. -1 monitors every port.")
+	tcpv6 bool;
+	flag.bool(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
+	port int;
+	flag.int(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 )
 
 const(
@@ -76,13 +76,6 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 }
 func main() {
 	flag.Parse()
-
-	/*if !*udp && !*tcp {
-		flag.Usage()
-		os.Exit(0)
-	}*/
-
-	//displaySockInfo(socks)
 	connections := make(map[string]uint)
 	connections6 := make(map[string]uint)
 
