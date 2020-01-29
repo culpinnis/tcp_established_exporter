@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/namsral/flag"
 	"fmt"
 	"github.com/cakturk/go-netstat/netstat"
 	"net"
@@ -9,13 +10,13 @@ import (
 	"net/http"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/namsral/flag"
 )
 
 var(
-	tcpv6 bool;
-	port int;
-
+	tcpv6 bool
+	port int
+	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
+	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 )
 
 const(
@@ -71,8 +72,6 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 	return(connection_counts_new)
 }
 func main() {
-	flag.bool(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
-	flag.int(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 	flag.Parse()
 	connections := make(map[string]uint)
 	connections6 := make(map[string]uint)
