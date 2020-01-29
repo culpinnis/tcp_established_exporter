@@ -106,7 +106,7 @@ func main() {
 					sum += 1
 				}
 			}
-			if(*tcpv6) {
+			if(tcpv6) {
 				for _, value := range(connections6) {
 					if(value > 6) {
 						sum += 1
