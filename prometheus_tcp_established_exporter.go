@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/cakturk/go-netstat/netstat"
 	"net"
-	"flag"
 	"time"
 	"strconv"
 	"net/http"
