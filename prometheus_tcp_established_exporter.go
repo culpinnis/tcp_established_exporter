@@ -15,8 +15,6 @@ import (
 var(
 	tcpv6 bool
 	port int
-	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
-	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 )
 
 const(
@@ -72,6 +70,8 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 	return(connection_counts_new)
 }
 func main() {
+	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
+	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 	flag.Parse()
 	connections := make(map[string]uint)
 	connections6 := make(map[string]uint)
