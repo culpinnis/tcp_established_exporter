@@ -17,7 +17,10 @@ const(
 	proto = 0x01 | 0x02
 	myport = 2112
 )
-
+var(
+	tcpv6 bool = true
+	port int = -1
+)
 var(
 	netstat_tcp_connection_longterm_counts = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "netstat_tcp_connection_longterm_counts",
@@ -59,17 +62,13 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 		daddr,dport := lookup(e.RemoteAddr)
 		cur_c := string(daddr+":"+strconv.Itoa(int(dport)) + "|" + saddr + strconv.Itoa(int(sport)))
 		//fmt.Printf("%s %s %s \n", saddr, daddr, e.State)
-		if((*port==-1||*port==int(sport))&&sport!=myport) {
+		if((port==-1||port==int(sport))&&sport!=myport) {
 			connection_counts_new[cur_c] = connection_counts[cur_c] + 1
 		}
 	}
 	return(connection_counts_new)
 }
 func main() {
-	var(
-		tcpv6 bool
-		port int
-	)
 	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
 	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 	flag.Parse()
@@ -86,7 +85,7 @@ func main() {
 			}
 			connections = countSockInfo(connections, socks)
 
-			if(*tcpv6) {
+			if(tcpv6) {
 				socks6, err := netstat.TCP6Socks(func(s6 *netstat.SockTabEntry) bool {
 					return s6.State == netstat.Established
 				})
