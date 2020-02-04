@@ -106,16 +106,16 @@ func main() {
 				time.Sleep(1 * time.Second)
 				netstat_tcp_connection_longterm_counts.Set(float64(sum))
 			}
-		}	else{
-			for{
-				connection_counts_port := make(map[string]uint)
-				for connection, value :=range(connections){
-					var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
-					netstat_tcp_connection_longterm_counts.WithLabelValues(dport).Observe(value)
-				}
-				//Add tcpv6 here!
-			}
-		}
+		// }	else{
+		// 	for{
+		// 		connection_counts_port := make(map[string]uint)
+		// 		for connection, value :=range(connections){
+		// 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
+		// 			netstat_tcp_connection_longterm_counts.WithLabelValues(dport).Observe(value)
+		// 		}
+		// 		//Add tcpv6 here!
+		// 	}
+		// }
 	}()
 	http.Handle("/metrics", promhttp.Handler())
   http.ListenAndServe(":"+strconv.Itoa(myport) , nil)
