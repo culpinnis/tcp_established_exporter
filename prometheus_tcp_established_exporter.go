@@ -87,8 +87,8 @@ func main() {
 		}
 	}()
 
-	go func() {//create a thread that counts and exports the metric
-		if(port==-1) {
+	go func() { //create a thread that counts and exports the metric
+		if(port!=-1) {
 			for{
 				var sum uint = 0
 				for _, value := range(connections) {
@@ -115,7 +115,7 @@ func main() {
 		// 		}
 		// 		//Add tcpv6 here!
 		// 	}
-		// }
+		 }
 	}()
 	http.Handle("/metrics", promhttp.Handler())
   http.ListenAndServe(":"+strconv.Itoa(myport) , nil)
