@@ -20,7 +20,7 @@ const(
 var(
 	tcpv6 bool = true
 	port int = -1
-	myport int = 9669
+	myport uint = 9669
 	duration int = 6
 )
 var(
