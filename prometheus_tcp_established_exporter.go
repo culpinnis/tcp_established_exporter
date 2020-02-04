@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/namsral/flag"
 	"fmt"
-	"strings"
+//	"strings"
 	"github.com/cakturk/go-netstat/netstat"
 	"net"
 	"time"
@@ -21,7 +21,7 @@ var(
 	tcpv6 bool = true
 	port int = -1
 	myport uint = 9669
-	duration int = 6
+	duration uint = 6
 )
 var(
 	netstat_tcp_connection_longterm_counts = prometheus.NewGauge(prometheus.GaugeOpts{
@@ -57,7 +57,7 @@ func main() {
 //get flags
 	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
 	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
-	flag.IntVar(&myport, "listen", 9669, "The port on that this exporter listens for requests.")
+	flag.UIntVar(&myport, "listen", 9669, "The port on that this exporter listens for requests.")
 	flag.IntVar(&duration, "duration", 6, "The minimal duration in seconds after a connection is concerned as longterm.")
 	flag.Parse()
 	connections := make(map[string]uint)
