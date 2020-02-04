@@ -20,8 +20,8 @@ const(
 var(
 	tcpv6 bool = true
 	port int = -1
-	myport uint = 9669
-	duration uint = 6
+	myport int = 9669
+	duration int = 6
 )
 var(
 	netstat_tcp_connection_longterm_counts = prometheus.NewGauge(prometheus.GaugeOpts{
@@ -47,7 +47,7 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 		daddr,dport := lookup(e.RemoteAddr)
 		cur_c := string(daddr+"_"+strconv.Itoa(int(dport)) + "|" + saddr +"_"+strconv.Itoa(int(sport)))
 		//fmt.Printf("%s %s %s \n", saddr, daddr, e.State)
-		if((port==-1||port==int(sport))&&sport!=myport) {
+		if((port==-1||port==int(sport))&&int(sport)!=myport) {
 			connection_counts_new[cur_c] = connection_counts[cur_c] + 1
 		}
 	}
@@ -57,7 +57,7 @@ func main() {
 //get flags
 	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
 	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
-	flag.UIntVar(&myport, "listen", 9669, "The port on that this exporter listens for requests.")
+	flag.IntVar(&myport, "listen", 9669, "The port on that this exporter listens for requests.")
 	flag.IntVar(&duration, "duration", 6, "The minimal duration in seconds after a connection is concerned as longterm.")
 	flag.Parse()
 	connections := make(map[string]uint)
@@ -92,13 +92,13 @@ func main() {
 			for{
 				var sum uint = 0
 				for _, value := range(connections) {
-					if(value >= duration) {
+					if(int(value) >= duration) {
 						sum += 1
 					}
 				}
 				if(tcpv6) {
 					for _, value := range(connections6) {
-						if(value >= duration) {
+						if(int(value) >= duration) {
 							sum += 1
 						}
 					}
