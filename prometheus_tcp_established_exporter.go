@@ -67,6 +67,7 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 
 func main() {
 //get flags
+	flag.String(flag.DefaultConfigFlagname, "", "path to config file")
 	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
 	flag.BoolVar(&simple, "simple", false, "Creates only one singe gauge metric ")
 	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
