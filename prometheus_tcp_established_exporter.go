@@ -134,6 +134,7 @@ func main() {
 					var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
 					netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "6").Set(float64(value))
 				}
+				time.Sleep(1 * time.Second)
 		 }
 	 }
 	}()
