@@ -127,6 +127,7 @@ func main() {
 			}
 		 }	else{
 		 	for{
+				var sum uint = 0
 		 		for connection, value :=range(connections){
 		 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[1]
 		 			netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "4").Set(float64(value))
