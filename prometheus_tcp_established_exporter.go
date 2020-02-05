@@ -107,7 +107,7 @@ func main() {
 	}()
 
 	go func() { //create a thread that counts and exports the metric
-		if(simple==true) {
+		if(simple==true) { //simple mode
 			for{
 				var sum uint = 0
 				for _, value := range(connections) {
@@ -125,16 +125,33 @@ func main() {
 				time.Sleep(1 * time.Second)
 				netstat_tcp_connection_longterm_counts.Set(float64(sum))
 			}
-		 }	else{
+		 }	else{ //complex mode
+			 sums4 := make(map[string]uint)
+			 sums6 := make(map[string]uint)
 		 	for{
-				var sum uint = 0
+				for port, _ :=range(sums4) {
+					sums4[port]=0
+				}
+				for port, _ :=range(sums6) {
+					sums6[port]=0
+				}
 		 		for connection, value :=range(connections){
 		 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[1]
-		 			netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "4").Set(float64(value))
+					if(int(value) >= duration) {
+						sums4[dport]+=1
+					}
 		 		}
 				for connection, value :=range(connections6){
 					var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[1]
-					netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "6").Set(float64(value))
+					if(int(value) >= duration) {
+						sums4[dport]+=1
+					}
+				}
+				for port, count :=range(sums4){
+					netstat_tcp_connection_longterm_counts_vec.WithLabelValues(port, "4").Set(float64(count))
+				}
+				for port, count :=range(sums6) {
+					netstat_tcp_connection_longterm_counts_vec.WithLabelValues(port, "6").Set(float64(count))
 				}
 				time.Sleep(1 * time.Second)
 		 }
