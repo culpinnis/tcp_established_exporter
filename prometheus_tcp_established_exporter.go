@@ -138,6 +138,22 @@ func main() {
 	 }
 	}()
 	http.Handle("/metrics", promhttp.Handler())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`<html>
+			<head><title>TCP Longterm Connection Exporter</title></head>
+			<body>
+			<h1>TCP Longterm Connection Exporter</h1>
+			<p><a href="` + "/metrics" + `">Metrics</a></p>
+			<h1>Parameters</h1>` +
+			`<p>simple: ` + strconv.FormatBool(simple) + `</p>` +
+			`<p>port: ` + strconv.Itoa(int(port)) + `</p>` +
+			`<p>listening port: ` + strconv.Itoa(int(myport)) + `</p>` +
+			`<p>TCPv6: ` + strconv.FormatBool(tcpv6) + `</p>` +
+			`<p>Longterm duration: ` + strconv.Itoa(int(duration)) + `</p>` +
+			`</body>
+			</html>`))
+	})
+
   http.ListenAndServe(":"+strconv.Itoa(myport) , nil)
 	//Add welcome page here
 }
