@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/namsral/flag"
 	"fmt"
-//	"strings"
+	"strings"
 	"github.com/cakturk/go-netstat/netstat"
 	"net"
 	"time"
@@ -17,20 +17,31 @@ import (
 const(
 	proto = 0x01 | 0x02
 )
+
 var(
 	tcpv6 bool = true
+	simple bool = false
 	port int = -1
 	myport int = 9669
 	duration int = 6
 )
+
 var(
 	netstat_tcp_connection_longterm_counts = prometheus.NewGauge(prometheus.GaugeOpts{
 		Name: "netstat_tcp_longterm_connections_total",
 		Help: "TCP connections that are established for a minimal duration"})
+	netstat_tcp_connection_longterm_counts_vec = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "netstat_tcp_longterm_connections_total",
+			Help: "TCP connections that are established for a minimal duration",
+		},
+		[]string{
+			"port",
+			"tcp_version",
+		},
+		)
 )
-func init(){
-	prometheus.MustRegister(netstat_tcp_connection_longterm_counts)
-}
+
 func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) map[string]uint {
 	connection_counts_new := make(map[string]uint)
 	lookup := func(skaddr *netstat.SockAddr) (string,uint) {
@@ -53,13 +64,20 @@ func countSockInfo(connection_counts map[string]uint, s []netstat.SockTabEntry) 
 	}
 	return(connection_counts_new)
 }
+
 func main() {
 //get flags
 	flag.BoolVar(&tcpv6, "tcpv6", true, "Should TCPV6 sockets be monitored?")
+	flag.BoolVar(&simple, "simple", false, "Creates only one singe gauge metric ")
 	flag.IntVar(&port, "port", -1, "The port that should be monitored. -1 monitors every port.")
 	flag.IntVar(&myport, "listen", 9669, "The port on that this exporter listens for requests.")
 	flag.IntVar(&duration, "duration", 6, "The minimal duration in seconds after a connection is concerned as longterm.")
 	flag.Parse()
+	if(simple==true) {
+		prometheus.MustRegister(netstat_tcp_connection_longterm_counts)
+	} else {
+		prometheus.MustRegister(netstat_tcp_connection_longterm_counts_vec)
+	}
 	connections := make(map[string]uint)
 	connections6 := make(map[string]uint)
 
@@ -88,7 +106,7 @@ func main() {
 	}()
 
 	go func() { //create a thread that counts and exports the metric
-		if(port!=-1) {
+		if(simple==true) {
 			for{
 				var sum uint = 0
 				for _, value := range(connections) {
@@ -106,16 +124,18 @@ func main() {
 				time.Sleep(1 * time.Second)
 				netstat_tcp_connection_longterm_counts.Set(float64(sum))
 			}
-		// }	else{
-		// 	for{
-		// 		connection_counts_port := make(map[string]uint)
-		// 		for connection, value :=range(connections){
-		// 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
-		// 			netstat_tcp_connection_longterm_counts.WithLabelValues(dport).Observe(value)
-		// 		}
-		// 		//Add tcpv6 here!
-		// 	}
+		 }	else{
+		 	for{
+		 		for connection, value :=range(connections){
+		 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
+		 			netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "4").Set(float64(value))
+		 		}
+				for connection, value :=range(connections6){
+					var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
+					netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "6").Set(float64(value))
+				}
 		 }
+	 }
 	}()
 	http.Handle("/metrics", promhttp.Handler())
   http.ListenAndServe(":"+strconv.Itoa(myport) , nil)
