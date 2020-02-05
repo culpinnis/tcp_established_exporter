@@ -128,11 +128,11 @@ func main() {
 		 }	else{
 		 	for{
 		 		for connection, value :=range(connections){
-		 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
+		 			var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[0], "_", 2)[1]
 		 			netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "4").Set(float64(value))
 		 		}
 				for connection, value :=range(connections6){
-					var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[1], "_", 2)[2]
+					var dport string = strings.SplitN(strings.SplitN(connection, "|", 2)[0], "_", 2)[1]
 					netstat_tcp_connection_longterm_counts_vec.WithLabelValues(dport, "6").Set(float64(value))
 				}
 				time.Sleep(1 * time.Second)
