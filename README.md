@@ -20,7 +20,7 @@ The exporter uses the package github.com/namsral/flag and can be configured via:
 
 *port:* [int] Sets a specific port to observe. The default is -1 which measures all ports (except the listening port of the exporter).
 
-*listen:* [int] Sets the listening port of the exporter. The default value is 9669.
+*listen:* [int] Sets the listening port of the exporter. The default value is 9690.
 
 *duration:* [int] The minimal duration in seconds after a connection is concerned as a longterm connection. The default value is 6.
 
