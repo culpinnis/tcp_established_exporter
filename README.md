@@ -1,5 +1,7 @@
 # tcp\_established\_exporter
 ![Go](https://github.com/culpinnis/tcp_established_exporter/workflows/Go/badge.svg?event=push)
+[![GitHub license](https://img.shields.io/github/license/culpinnis/tcp_established_exporter)](https://github.com/culpinnis/tcp_established_exporter/blob/master/LICENSE)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/culpinnis/prometheus_tcp_established_exporter)](https://hub.docker.com/r/culpinnis/prometheus_tcp_established_exporter)
 
 ## The exporter
 
