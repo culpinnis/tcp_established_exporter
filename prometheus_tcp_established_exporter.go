@@ -22,7 +22,7 @@ var(
 	tcpv6 bool = true
 	simple bool = false
 	port int = -1
-	myport int = 9669
+	myport int = 9690
 	duration int = 6
 )
 
