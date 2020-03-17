@@ -24,5 +24,5 @@ RUN GOARCH=amd64 CGO_ENABLED=0 GOOS=linux go build -o /bin/prometheus_tcp_establ
 FROM scratch
 COPY --from=build /bin/prometheus_tcp_established_exporter /bin/prometheus_tcp_established_exporter
 
-EXPOSE 9669
+EXPOSE 9690
 ENTRYPOINT ["/bin/prometheus_tcp_established_exporter"]
