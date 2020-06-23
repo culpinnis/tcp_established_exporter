@@ -15,7 +15,7 @@ The exporter uses the package github.com/namsral/flag and can be configured via:
 * Environment variables
 * Configuration file
 
-### Possible settings
+### Settings
 *simple:* [bool] If set to true the exported metric will be a gauge counting all longterm established connections. If false (default) it will create a gauge with labels for each observed port and TCP version.
 
 *tcpv6:* [bool] If set to true (default) IPv6 connections will be measured, too.
@@ -37,7 +37,7 @@ go get github.com/ipbhalle/tcp_established_exporter
 #Run the exporter
 go run github.com/ipbhalle/tcp_established_exporter
 ```
-### Application of settings
+### Definition of settings
 You can export the settings as environmental variables:
 ```bash
 export SIMPLE=true
@@ -62,11 +62,11 @@ tcpv6 true
 ```
 
 The metrics will be exposed at /metrics
-### Possible Use Cases
-The exporter can be used if you want to measure/observe the number of connections to one or multiple services. It can be useful for applications that use WebSockets because each user establishes a longterm connection.
-It was designed to count the number of users of Shiny web applications because the Shiny open-source server has not metrics endpoint out of the box.
+### Use Cases
+The exporter can be used to measure/observe the number of connections to one or multiple services. It can be useful for applications that use WebSockets, because each user establishes a longterm connection.
+It was designed to count the number of users for Shiny web applications.
 But it could be also used for other use cases, e.g. if you want to guarantee that there is a connection to a service (and trigger an alert otherwise).  
 ### Kubernetes
 The docker image of this exporter can be used as a sidecar in Kubernetes to measure the longterm connections of a pod.
-Different containers running on the same pod are sharing the resources of the pod. Because of that, it possible to measure the TCP connections of applications running in other containers.
+Different containers running on the same pod are sharing the resources of the pod. In that way it possible to detect the TCP connections of applications running in other containers.
 A complete example will be shown in the future.
